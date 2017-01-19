@@ -91,7 +91,6 @@ Player.prototype.cleanUp = function() {
 Player.prototype.gain = function(card) {
     if (supply[card.name] > 0) {
         supply[card.name] -= 1;
-        document.getElementById(card.name+"Supply").innerHTML = card.name + ": " + supply[card.name];
         this.discard.push(card);
     } else {
         console.log("no more " + card.name);
@@ -107,6 +106,53 @@ function Card(name, cost, types) {
 }
 
 
+function updateView() {
+
+    //erase all generated elements before adding them again
+    var lists = document.body.getElementsByClassName("deleteMe") 
+    for (var i = 0; i< lists.length;) {
+        lists[i].remove();
+    }
+
+
+    //print the supply
+    for (let i in supply) {
+        var item = document.createElement("li");
+        var supplyView = document.getElementById("supply");
+        item.innerHTML = i + ": " + supply[i];
+        item.className = "deleteMe";
+        supplyView.append(item);
+    }
+
+    for (let j in players) {
+
+        //print the deck
+        for (let i in players[j].deck) {
+            var item = document.createElement("li");
+            item.innerHTML = players[j].deck[i].name;
+            item.className = "deleteMe";
+            document.getElementsByClassName("player")[j].getElementsByClassName("deck")[0].append(item);
+        }
+
+        //print the hand
+        for (let i in players[j].hand) {
+            var item = document.createElement("li");
+            item.innerHTML = players[j].hand[i].name;
+            item.className = "deleteMe";
+            document.getElementsByClassName("player")[j].getElementsByClassName("hand")[0].append(item);
+        }
+
+        //print the discard
+        for (let i in players[j].discard) {
+            var item = document.createElement("li");
+            item.innerHTML = players[j].discard[i].name;
+            item.className = "deleteMe";
+            document.getElementsByClassName("player")[j].getElementsByClassName("discard")[0].append(item);
+        }
+    }
+}
+
+
 
 //START OF PROGRAM
 
@@ -114,23 +160,6 @@ var player1 = new Player("Tom");
 var player2 = new Player("Daisy");
 var players = [player1, player2];
 
-var supplyView = document.getElementById("supply");
-console.log(supplyView);
 
-for (let i in supply) {
-    var item = document.createElement("li");
-    item.innerHTML = i + ": " + supply[i];
-    item.id = i+"Supply";
-    supplyView.append(item);
-}
 
-for (let j in players) {
-    console.log(j);
-    for (let i in players[j].deck) {
-        var item = document.createElement("li");
-        item.innerHTML = players[j].deck[i].name;
-        item.id = i;
-        document.getElementsByClassName("player")[j].getElementsByClassName("deck")[0].append(item);
-    }
-}
 
