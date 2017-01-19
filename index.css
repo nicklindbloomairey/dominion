@@ -1,0 +1,15 @@
+.player {
+    border: 5px solid black;
+}
+.deck {
+    border: 2px dashed blue;
+}
+.hand {
+    border: 2px dashed green;
+}
+.discard {
+    border: 2px dashed red;
+}
+#supplydiv {
+    border: 5px solid black;
+}
