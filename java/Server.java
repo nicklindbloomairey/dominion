@@ -54,12 +54,22 @@ public class Server implements Runnable {
     }
 
     public void run() {
+        ObjectOutputStream out;
+        ObjectInputStream in;
 
-        ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(connection.getInputStream());
-
-        out.writeObject("Connection successful with id " + ID);
         try {
+            out = new ObjectOutputStream(connection.getOutputStream());
+            in = new ObjectInputStream(connection.getInputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            out = null;
+            in = null;
+        }
+
+        try {
+
+            out.writeObject("Connection successful with id " + ID);
+
             String input = (String) in.readObject();
             System.out.println(input);
         } catch (Exception e) {
@@ -81,8 +91,8 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
         finally {
-            out.close();
             try {
+                out.close();
                 connection.close();
                 count--; 
             } catch (Exception e) {
