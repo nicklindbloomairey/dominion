@@ -7,7 +7,7 @@ public class Server implements Runnable {
     private String TimeStamp;
     private int ID;
 
-    private static int count = 0;
+    public static int count = 0;
     public static ArrayList<Boolean> ready;
     public static boolean allReady = false;
 
@@ -15,7 +15,7 @@ public class Server implements Runnable {
     public static void main(String[] args) {
 
         Runnable gameRunnable = new Game();
-        Thread gameThread = new Thread(game);
+        Thread gameThread = new Thread(gameRunnable);
         gameThread.start();
 
         ready = new ArrayList<Boolean>();
@@ -88,6 +88,7 @@ public class Server implements Runnable {
                     String input = (String) in.readObject();
                     if (input.equals("ready")) {
                         Server.ready.set(ID-1, true);
+                        System.out.println("Client with ID " + ID + " is ready");
 
                         //update the allready variable
                         boolean check = true;
@@ -96,7 +97,11 @@ public class Server implements Runnable {
                                 check = false;
                             }
                         }
-                        Server.allReady = check;
+                        if (Server.ready.size()>1) {
+                            Server.allReady = check;
+                        }
+
+                        System.out.println(allReady);
                     }
                 }
             }
