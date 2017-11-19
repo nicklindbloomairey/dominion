@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class Game {
+public class Game implements Serializable {
     Player p1, p2, p3, p4;
     ArrayList<Player> players;
     int numPlayers;
@@ -70,6 +70,34 @@ public class Game {
             players.get(i).drawHand(); 
         }
     }
+    
+    public turn() {
+        System.out.println("It is " + players.index(turn).toString() + "turn")
+    }
+
+    public boolean isGameOver() {
+        if (province.isEmpty()) {
+            return true;
+        } else {
+            int stacksEmpty = 0;
+            for (Stack<Card> pile : kingdom) {
+                if (pile.isEmpty()) {
+                    stacksEmpty ++;
+                }
+            }
+            if (stacksEmpty >= 3) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public gameLoop() {
+        while(
+    }
+    
+
+
 
 
 }
