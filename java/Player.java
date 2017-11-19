@@ -51,6 +51,7 @@ public class Player {
 
 
     public int score() {
+        return 0;
     }
 
     //this needs to return info to the game probally

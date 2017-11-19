@@ -2,6 +2,11 @@ public class Card {
     String name, type;
     int cost, victory_points, treasure_points;
     String text; //?
+    Player owner;
+
+    public Card(String name) {
+        this(name, new Player());
+    }
 
     public Card(String name, Player owner) {
         this.name = name;
@@ -25,7 +30,7 @@ public class Card {
         } else if (name.equals("estate")) {
             cost = 2;
             type = "victory";
-            victory_points = 1
+            victory_points = 1;
         } else if (name.equals("duchy")) {
             cost = 5;
             type = "victory";

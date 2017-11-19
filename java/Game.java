@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Stack;
+import java.io.Serializable;
 
 public class Game implements Serializable {
     Player p1, p2, p3, p4;
@@ -61,18 +62,18 @@ public class Game implements Serializable {
         players = new ArrayList<Player>();
         for (int i = 0; i<numPlayers; i++) {
             players.add(new Player());
-            for (int i = 0; i<7; i++) {
+            for (int j = 0; j<7; j++) {
                 players.get(i).gain(copper.pop());
             }
-            for (int i = 0; i<3; i++) {
+            for (int j = 0; j<3; j++) {
                 players.get(i).gain(estate.pop());
             }
             players.get(i).drawHand(); 
         }
     }
     
-    public turn() {
-        System.out.println("It is " + players.index(turn).toString() + "turn")
+    public void turn() {
+        System.out.println("It is " + players.get(turn).toString() + "turn");
     }
 
     public boolean isGameOver() {
@@ -92,8 +93,7 @@ public class Game implements Serializable {
         return false;
     }
 
-    public gameLoop() {
-        while(
+    public void gameLoop() {
     }
     
 
