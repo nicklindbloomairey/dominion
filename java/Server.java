@@ -8,11 +8,15 @@ public class Server implements Runnable {
     private int ID;
 
     private static int count = 0;
-    private static Game game; //master game object
-    private static ArrayList<Boolean> ready;
+    public static ArrayList<Boolean> ready;
+    public static boolean allReady = false;
 
 
     public static void main(String[] args) {
+
+        Runnable gameRunnable = new Game();
+        Thread gameThread = new Thread(game);
+        gameThread.start();
 
         ready = new ArrayList<Boolean>();
 
@@ -23,23 +27,23 @@ public class Server implements Runnable {
             System.out.println("Server Started");
 
             while (true) {
-                Socket connection = serverSocket.accept();
+                Socket connection = serverSocket.accept(); //this thread stops everytime, waiting for a connection
                 Runnable runnable = new Server(connection, ++Server.count);
                 Thread thread = new Thread(runnable);
                 thread.start();
                 Server.ready.add(false);
+                allReady = false;
 
-                boolean check = true;
-                for (int i = 0; i<Server.ready.size(); i++) {
-                    if (!Server.ready.get(i)) {
-                        check = false;
-                    }
-                }
+                //this code never gets run
+                /*
                 if (check) {
                     System.out.println("All users ready, starting game with " + Server.count + " players");
                     String[] kingdom = {"cellar", "market", "merchant", "militia", "mine", "moat", "remodel", "smithy", "village", "workshop"};
                     game = new Game(Server.count, kingdom);
+                } else {
+                    System.out.println("not all players ready");
                 }
+                */
             }
 
         } catch (Exception e) {
@@ -80,10 +84,19 @@ public class Server implements Runnable {
         try {
             while (true) {
                 //listen for input from clients and update game object accordingly
-                if (!Server.ready.get(ID)) {
+                if (!Server.ready.get(ID-1)) {
                     String input = (String) in.readObject();
                     if (input.equals("ready")) {
-                        Server.ready.set(ID, true);
+                        Server.ready.set(ID-1, true);
+
+                        //update the allready variable
+                        boolean check = true;
+                        for (int i = 0; i<Server.ready.size(); i++) {
+                            if (!Server.ready.get(i)) {
+                                check = false;
+                            }
+                        }
+                        Server.allReady = check;
                     }
                 }
             }
@@ -94,7 +107,7 @@ public class Server implements Runnable {
             try {
                 out.close();
                 connection.close();
-                count--; 
+                Server.count--; 
             } catch (Exception e) {
                 e.printStackTrace();
             }

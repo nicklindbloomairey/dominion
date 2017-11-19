@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.io.Serializable;
 
-public class Game implements Serializable {
+public class Game implements Serializable, Runnable {
     Player p1, p2, p3, p4;
     ArrayList<Player> players;
     int numPlayers;
@@ -93,7 +93,7 @@ public class Game implements Serializable {
         return false;
     }
 
-    public void gameLoop() {
+    public void run() {
     }
     
 

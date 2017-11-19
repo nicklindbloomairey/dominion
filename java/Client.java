@@ -27,7 +27,8 @@ public class Client {
 
         try {
             while(true) { //game loop - where everything goes
-                System.out.println("Welcome to dominion");
+                if (!ready) 
+                    System.out.println("Welcome to dominion");
                 while(!ready) {
                     System.out.println("Are you ready? (y/n)");
                     String input = scanscan.nextLine();
