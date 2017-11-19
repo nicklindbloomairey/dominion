@@ -91,6 +91,22 @@ public class Card {
             cost = 4;
             type = "action";
             text = "+1 Card\n+1 Action\n+1 Coin\nDiscard a card per empty Supply pile.";
+        } else if (name.equals("remodel")) {
+            cost = 4;
+            type = "action";
+            text = "Trash a card from your hand. GAin a card costing up to 2 Coins more than it.";
+        } else if (name.equals("smithy")) {
+            cost = 4;
+            type = "action";
+            text = "+3 Cards";
+        } else if (name.equals("throne room")) {
+            cost = 4;
+            type = "action";
+            text = "You may play an Action card from your hand twice.";
+        } else if (name.equals("bandit")) {
+            cost = 5;
+            type = "action";
+            text = "Gain a Gold.";
         }
 
     }
