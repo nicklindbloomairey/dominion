@@ -2,18 +2,42 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.io.Serializable;
 
-public class Game implements Serializable, Runnable {
-    Player p1, p2, p3, p4;
+public class Game implements Serializable {
+    //Player p0, p1, p2, p3;
     ArrayList<Player> players;
-    int numPlayers;
-    int turn = 0;
+    int turn;
+    boolean start = false;
+    String status = "not started";
 
     Stack<Card> trash, copper, silver, gold, curse, estate, duchy, province;
     ArrayList<Stack<Card>> kingdom;
 
+    //empty constructor!
     public Game() {
+        players = new ArrayList<Player>();
     }
 
+    public void start() {
+        status = "started";
+        String[] firstGame = {"cellar", "market", "merchant", "militia", "mine", "moat", "remodel", "smithy", "village", "workshop"};
+        setupKingdom(firstGame);
+    }
+
+    public boolean addPlayer() {
+        if (status.equals("not started")) {
+            players.add(new Player());
+            return true;
+        }
+        return false;
+    }
+
+    /*
+    public void removePlayer(int id) {
+        players.remove(id);
+    }
+    */
+
+    /*
     public Game(int numPlayers, String[] kingdomCards) {
         this.numPlayers = numPlayers;
 
@@ -74,9 +98,10 @@ public class Game implements Serializable, Runnable {
             players.get(i).drawHand(); 
         }
     }
+    */
 
-    public void setupKingdom(int numPlayers, String[] kingdomCards) {
-        this.numPlayers = numPlayers;
+    public void setupKingdom(String[] kingdomCards) {
+        int numPlayers = players.size();
 
         trash = new Stack<Card>();
 
@@ -95,6 +120,7 @@ public class Game implements Serializable, Runnable {
             gold.push(new Card("gold"));
         }
 
+        //math for number of estates
         int num = 0;
         if (numPlayers == 2) {
             num = 14;
@@ -103,29 +129,30 @@ public class Game implements Serializable, Runnable {
         } else if (numPlayers == 4) {
             num = 24;
         }
+
         estate = new Stack<Card>();
         for (int i = 0; i<num; i++) {
-            estate.push(new Card("estate"));
+            estate.push(new Card("estate")); //estates
         }
+
         num -= (3*numPlayers);
         duchy = new Stack<Card>();
         for (int i = 0; i<num; i++) {
-            duchy.push(new Card("duchy"));
+            duchy.push(new Card("duchy")); //duchies
         }
         province = new Stack<Card>();
         for (int i = 0; i<num; i++) {
-            province.push(new Card("province"));
+            province.push(new Card("province")); //provinces
         }
 
         num = 10 *(numPlayers-1);
         curse = new Stack<Card>();
         for (int i = 0; i<num; i++) {
-            curse.push(new Card("curse"));
+            curse.push(new Card("curse")); //curses
         }
 
-        players = new ArrayList<Player>();
+        //deal out 7 coppers and 3 estates to each person
         for (int i = 0; i<numPlayers; i++) {
-            players.add(new Player());
             for (int j = 0; j<7; j++) {
                 players.get(i).gain(copper.pop());
             }
@@ -134,8 +161,18 @@ public class Game implements Serializable, Runnable {
             }
             players.get(i).drawHand(); 
         }
+
+
+        kingdom = new ArrayList<Stack<Card>>();
+        for (int i = 0; i<kingdomCards.length; i++) {
+            kingdom.add(new Stack<Card>());
+            for (int j = 0; j<10; j++) {
+                kingdom.get(i).push(new Card(kingdomCards[i])); //10 of each kingdom card in a seperate pile
+            }
+        }
     }
     
+    /*
     public void turn() {
         System.out.println("It is " + players.get(turn).toString() + "turn");
     }
@@ -157,8 +194,12 @@ public class Game implements Serializable, Runnable {
         return false;
     }
 
+
+    public void update( all the info from the player that called it) {
+
+    }
+
     public void run() {
-        boolean start = false;
         while (!start) {
             if (Server.allReady) {
                     String[] kingdom = {"cellar", "market", "merchant", "militia", "mine", "moat", "remodel", "smithy", "village", "workshop"};
@@ -176,10 +217,17 @@ public class Game implements Serializable, Runnable {
 
 
         //game has started from here on out
+
+        turn = 0;
+        while (true) { //game loop
+
+            
+
+
+            turn++;
+        }
+
     }
     
-
-
-
-
+    */
 }

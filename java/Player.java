@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.Serializable;
 
-public class Player {
-    ArrayList<Card> deck, hand, play, discard;
-    int coins = -1, actions = -1, buys = -1;
+public class Player implements Serializable {
+    public ArrayList<Card> deck, hand, play, discard;
+    public int coins = -1, actions = -1, buys = -1;
+    boolean ready = false;
 
     public Player() {
         deck = new ArrayList<Card>();

@@ -1,4 +1,6 @@
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
     String name, type;
     int cost, victory_points, treasure_points;
     String text; //?

@@ -7,18 +7,20 @@ public class Server implements Runnable {
     private String TimeStamp;
     private int ID;
 
-    public static int count = 0;
-    public static ArrayList<Boolean> ready;
-    public static boolean allReady = false;
+    public static int count = -1;
+    //public static ArrayList<Boolean> ready;
+    //public static boolean allReady = false;
+    //public static Game gameObject = new Game();
+    public static GameServer gameServer;
 
 
     public static void main(String[] args) {
 
-        Runnable gameRunnable = new Game();
-        Thread gameThread = new Thread(gameRunnable);
+        gameServer = new GameServer();
+        Thread gameThread = new Thread(gameServer);
         gameThread.start();
 
-        ready = new ArrayList<Boolean>();
+        //ready = new ArrayList<Boolean>();
 
         int portNumber = 8080;
 
@@ -28,11 +30,12 @@ public class Server implements Runnable {
 
             while (true) {
                 Socket connection = serverSocket.accept(); //this thread stops everytime, waiting for a connection
+                gameServer.addConnection(connection);
                 Runnable runnable = new Server(connection, ++Server.count);
                 Thread thread = new Thread(runnable);
                 thread.start();
-                Server.ready.add(false);
-                allReady = false;
+                //Server.ready.add(false);
+                //allReady = false;
 
                 //this code never gets run
                 /*
@@ -57,22 +60,18 @@ public class Server implements Runnable {
         this.ID = i;
     }
 
+/*
     public void run() {
-        ObjectOutputStream out;
         ObjectInputStream in;
 
         try {
-            out = new ObjectOutputStream(connection.getOutputStream());
             in = new ObjectInputStream(connection.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
-            out = null;
             in = null;
         }
 
         try {
-
-            out.writeObject("Connection successful with id " + ID);
 
             String input = (String) in.readObject();
             System.out.println(input);
@@ -80,7 +79,7 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
 
-        //listen
+        //listen do not send anything from here
         try {
             while (true) {
                 //listen for input from clients and update game object accordingly
@@ -103,7 +102,17 @@ public class Server implements Runnable {
 
                         System.out.println(allReady);
                     }
+                } 
+
+                if (gameObject.start) {
+                    //if it is this players turn ask what they want to do
+                    if (gameObject.turn == ID) {
+                        out.writeObject("It is your turn.");
+                    } else {
+                        out.writeObject("Waiting for player " + (gameObject.turn+1) + "");
+                    }
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,6 +121,51 @@ public class Server implements Runnable {
             try {
                 out.close();
                 connection.close();
+                Server.count--; 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+*/
+
+    public void run() {
+        ObjectInputStream in;
+
+        try {
+            in = new ObjectInputStream(connection.getInputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            in = null;
+        }
+
+        try {
+
+            String input = (String) in.readObject();
+            System.out.println(input);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //listen do not send anything from here
+        try {
+            while (true) {
+                //listen for input from clients and update game object accordingly
+                String s = (String) in.readObject(); 
+                Command c = new Command(ID, s);
+                gameServer.update(c);
+                System.out.println(c);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        finally {
+            try {
+                connection.close();
+                //gameServer.closeConnection(ID);
                 Server.count--; 
             } catch (Exception e) {
                 e.printStackTrace();
