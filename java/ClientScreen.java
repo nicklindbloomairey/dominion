@@ -15,21 +15,31 @@ import java.net.*;
 
 public class ClientScreen extends JPanel implements MouseListener, ActionListener {
 
+    public static final int WIDTH=800, HEIGHT=600;
 	private ObjectOutputStream out;
     private Game game = new Game(); //this is a dummy game, will be overwritten once the server sends a copy
+    private int ID;
 
     private JButton ready;
 	
 	public ClientScreen() {
+        this.setLayout(null);
 		this.setFocusable(true);
         addMouseListener(this);
 
         ready = new JButton("ready");
-        ready.setBounds(10, 50, 100, 30);
+        ready.setBounds(WIDTH/2, HEIGHT/2, 100, 30);
         ready.addActionListener(this);
         this.add(ready);
 
 	}
+
+    public void drawHand(Graphics g, int x, int y) {
+        for (int i = 0; i<game.players.get(ID).hand.size(); i++) {
+            g.drawString(game.players.get(ID).hand.get(i).toString(), x, y);
+            y+=30;
+        }
+    }
 	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);	
@@ -40,14 +50,19 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
 
         g.drawString(game.status, 600, 500);
         g.drawString("" + game.players.size(), 600, 450);
+        g.drawString("Player " + ID, WIDTH/2, 30);
+
         if (game.status.equals("not started")) {
             g.drawString("Waiting for players", 100, 100);
+            g.drawString("Ready: " + game.players.get(ID).ready, 100, 130);
+        } else if (game.status.equals("started")) {
+            drawHand(g, WIDTH/4, HEIGHT/2);
         }
         
 	}
 
 	public Dimension getPreferredSize() {
-        return new Dimension(800,600);
+        return new Dimension(WIDTH,HEIGHT);
 	}
 	
     //mouse listener methods
@@ -68,6 +83,15 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
         }
     }
 
+
+    public void update() {
+        this.removeAll();
+        if (game.status.equals("not started")) {
+            this.add(ready);
+        } else if (game.status.equals("started")) {
+        }
+    }
+
 	
 
 	public void poll(String hostName) throws IOException{
@@ -83,6 +107,7 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
         try {
             String input = (String) in.readObject(); //wait for the connection successful message
             System.out.println(input);
+            ID = Integer.parseInt(input.split("\\s+")[0]);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,6 +118,7 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
             while (true) {
 				
 				game = (Game) in.readObject();
+                update();
                 //String input = (String) in.readObject();
 				repaint();
 				

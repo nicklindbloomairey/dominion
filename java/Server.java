@@ -30,8 +30,8 @@ public class Server implements Runnable {
 
             while (true) {
                 Socket connection = serverSocket.accept(); //this thread stops everytime, waiting for a connection
-                gameServer.addConnection(connection);
-                Runnable runnable = new Server(connection, ++Server.count);
+                gameServer.addConnection(connection, ++Server.count);
+                Runnable runnable = new Server(connection, Server.count);
                 Thread thread = new Thread(runnable);
                 thread.start();
                 //Server.ready.add(false);

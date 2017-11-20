@@ -57,6 +57,7 @@ public class Player implements Serializable {
     }
 
     //this needs to return info to the game probally
+    /*
     public void play(int index) {
         if (hand.get(index).getName().equals("copper")) {
 
@@ -67,6 +68,7 @@ public class Player implements Serializable {
         play.add(hand.remove(index));
 
     }
+    */
     
 }
 

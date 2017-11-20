@@ -12,12 +12,12 @@ public class GameServer implements Runnable {
         game = new Game();
     }
 
-    public void addConnection(Socket c) {
+    public void addConnection(Socket c, int id) {
         try {
             ObjectOutputStream output = new ObjectOutputStream(c.getOutputStream());
             out.add(output);
             if (game.addPlayer()) {
-                output.writeObject("Connection Successful");
+                output.writeObject(id + " Connection Successful");
             }
         } catch (IOException e) {
             e.printStackTrace();
