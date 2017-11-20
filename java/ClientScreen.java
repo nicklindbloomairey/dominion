@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JTextField;
 
 import java.io.*;
 import java.net.*;
@@ -18,9 +19,11 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
     public static final int WIDTH=800, HEIGHT=600;
 	private ObjectOutputStream out;
     private Game game = new Game(); //this is a dummy game, will be overwritten once the server sends a copy
+    private String lastStatus;
     private int ID;
 
-    private JButton ready;
+    private JButton ready, play, buy;
+    private JTextField input;
 	
 	public ClientScreen() {
         this.setLayout(null);
@@ -32,11 +35,31 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
         ready.addActionListener(this);
         this.add(ready);
 
+        play = new JButton("Play");
+        play.setBounds( WIDTH/4, HEIGHT-50, 100, 30);
+        play.addActionListener(this);
+
+        buy = new JButton("Buy");
+        buy.setBounds( (WIDTH/4) + 110, HEIGHT-50, 100, 30);
+        buy.addActionListener(this);
+
+        input = new JTextField(20);
+        input.setBounds( WIDTH/4, HEIGHT-90, 100, 30);
+
 	}
 
     public void drawHand(Graphics g, int x, int y) {
+        g.drawString("Hand", x, y-30);
         for (int i = 0; i<game.players.get(ID).hand.size(); i++) {
-            g.drawString(game.players.get(ID).hand.get(i).toString(), x, y);
+            g.drawString(i + ". " + game.players.get(ID).hand.get(i).toString(), x, y);
+            y+=30;
+        }
+    }
+
+    public void drawPlay(Graphics g, int x, int y) {
+        g.drawString("In Play", x, y-30);
+        for (int i = 0; i<game.players.get(ID).play.size(); i++) {
+            g.drawString(i + ". " + game.players.get(ID).play.get(i).toString(), x, y);
             y+=30;
         }
     }
@@ -52,11 +75,16 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
         g.drawString("" + game.players.size(), 600, 450);
         g.drawString("Player " + ID, WIDTH/2, 30);
 
+
         if (game.status.equals("not started")) {
             g.drawString("Waiting for players", 100, 100);
             g.drawString("Ready: " + game.players.get(ID).ready, 100, 130);
         } else if (game.status.equals("started")) {
             drawHand(g, WIDTH/4, HEIGHT/2);
+            drawPlay(g, WIDTH/2, HEIGHT/2);
+            g.drawString("Coins: " + game.players.get(ID).coins, 100, 100);
+            g.drawString("Actions: " + game.players.get(ID).actions, 100, 130);
+            g.drawString("Buys: " + game.players.get(ID).buys, 100, 160);
         }
         
 	}
@@ -80,15 +108,28 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
             } catch(IOException ex) {
                 ex.printStackTrace();
             }
+        } else if (e.getSource()==play) {
+            int index = Integer.parseInt(input.getText());
+            try {
+                out.writeObject("play " + index);
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+
         }
     }
 
 
     public void update() {
-        this.removeAll();
-        if (game.status.equals("not started")) {
-            this.add(ready);
-        } else if (game.status.equals("started")) {
+        if (!lastStatus.equals(game.status)) {
+            this.removeAll();
+            if (game.status.equals("not started")) {
+                this.add(ready);
+            } else if (game.status.equals("started")) {
+                this.add(play);
+                this.add(input);
+                this.add(buy);
+            }
         }
     }
 
@@ -116,7 +157,7 @@ public class ClientScreen extends JPanel implements MouseListener, ActionListene
 		try {
 
             while (true) {
-				
+			    lastStatus = game.status;	
 				game = (Game) in.readObject();
                 update();
                 //String input = (String) in.readObject();

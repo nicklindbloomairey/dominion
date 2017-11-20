@@ -81,7 +81,11 @@ public class GameServer implements Runnable {
         } else if (game.status.equals("started")) {
             if (c.player >= game.players.size()) {
                 //ignore the command, this player is not in the game!
+                //wow security!
             } else {
+                if (c.command.equals("play")) {
+                    game.players.get(c.player).play(Integer.parseInt(c.arg1));
+                }
             }
 
         }

@@ -56,19 +56,8 @@ public class Player implements Serializable {
         return 0;
     }
 
-    //this needs to return info to the game probally
-    /*
     public void play(int index) {
-        if (hand.get(index).getName().equals("copper")) {
-
-        }
-
-
-
         play.add(hand.remove(index));
-
     }
-    */
-    
 }
 
