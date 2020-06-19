@@ -1,1 +1,1 @@
-# dominion
+#python curses implementation of dominion
